@@ -1,0 +1,289 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"languageName":"csharp","name":"csharp"}]}}
+
+#!markdown
+
+# Intro to Enumerated Types in C#
+
+In this lesson, you will explore how to define and use enumerated types in C#.
+Before starting, you should be familiar with creating variables, writing to the
+console, writing methods, and using if statements.
+
+#!markdown
+
+## The Seasons
+
+In C#, variables are **statically typed**. This means that the type of all
+variables can be determined before the program is run. One of the benefits of
+this is that the compiler will provide type mismatch errors before the program
+is executed.
+
+Imagine you would like to write a program to represent the 4 seasons: Winter,
+Spring, Summer, and Fall.
+
+#!markdown
+
+### The Seasons as Integers
+
+One option might be to represent the season as an `int`:
+
+#!csharp
+
+void PrintSeason(int season)
+{
+    if (season == 0) { Console.WriteLine("It is Winter"); }
+    else if (season == 1) { Console.WriteLine("It is Spring"); }
+    else if (season == 2) { Console.WriteLine("It is Summer"); }
+    else if (season == 3) { Console.WriteLine("It is Fall"); }
+}
+
+PrintSeason(0);
+PrintSeason(1);
+PrintSeason(2);
+PrintSeason(3);
+
+#!markdown
+
+#### Think About It
+
+This approach could work. However, you might already be seeing some potential
+challenges. Recall that as a programmer one of your goals is to manage the
+complexity of the program.
+
+Before continuing, write down how this increases the complexity of your program. What
+challenges might you encounter by writing code in this way?
+
+#!markdown
+
+#### The Seasons as Strings
+
+Another approach might be to represent each season as a `string`:
+
+#!csharp
+
+void DisplaySeasonInfo(string season)
+{
+    if (season == "Summer") { Console.WriteLine("Let's go to the beach"); }
+    else if (season == "Winter") { Console.WriteLine("Oh the weather outside is frightful"); }
+    else if (season == "Spring") { Console.WriteLine("Watch out for allergies"); }
+    else if (season == "Fall") { Console.WriteLine("Not too hot, not too cold"); }
+    else { Console.WriteLine($"I've never heard of {season}"); }
+}
+
+DisplaySeasonInfo("Summer");
+DisplaySeasonInfo("Winter");
+DisplaySeasonInfo("Spring");
+DisplaySeasonInfo("Fall");
+
+#!markdown
+
+Just like using `int` this approach could work. With an `int` it was not
+entirely obvious at a glance that `1` meant spring. This was an added
+complexity. By using a `string` it is a little more obvious. However, this
+approach is still prone to typos. The method `DisplaySeasonInfo` can accept
+*ANY* `string`. 
+
+#!csharp
+
+DisplaySeasonInfo("Banana");
+DisplaySeasonInfo("summer");
+
+#!markdown
+
+### The Seasons as an Enumerated Type
+
+C# provides you with the ability to define a simple custom type that is a small
+list of choices. This is called an **enumerated type**.
+
+To do this for the seasons, you might write:
+
+#!csharp
+
+public enum Season
+{
+    Winter,
+    Spring,
+    Summer,
+    Fall
+}
+
+#!markdown
+
+With this new type defined, we can now rewrite our two methods from above using the new type:
+
+#!csharp
+
+void PrintSeason(Season season)
+{
+    Console.WriteLine($"It is {season}");
+}
+
+PrintSeason(0);
+PrintSeason(1);
+PrintSeason(2);
+PrintSeason(3);
+
+#!csharp
+
+void DisplaySeasonInfo(Season season)
+{
+    if (season == Season.Winter) { Console.WriteLine("Let's go to the beach"); }
+    else if (season == Season.Summer) { Console.WriteLine("Oh the weather outside is frightful"); }
+    else if (season == Season.Spring) { Console.WriteLine("Watch out for allergies"); }
+    else if (season == Season.Fall) { Console.WriteLine("Not too hot, not too cold"); }
+    else { Console.WriteLine($"I've never heard of {season}"); }
+}
+
+DisplaySeasonInfo(Season.Winter);
+DisplaySeasonInfo(Season.Summer);
+DisplaySeasonInfo(Season.Spring);
+DisplaySeasonInfo(Season.Fall);
+
+#!markdown
+
+Notice: Without writing "tricky" code, it is not possible to call the
+`DisplaySeasonInfo` method with a value that would result in the final `else`
+branch executing.
+
+#!markdown
+
+## Enums Types
+
+Under the hood, enumerated types are just integers. However, by using them you
+are able to take advantage of C#'s static typing to ensure you don't
+accidentally misuse them.
+
+### Casting Enums
+
+That said, you can cast integers to and from enumerated types:
+
+#!csharp
+
+int asInteger = (int)Season.Summer;
+Console.WriteLine($"{Season.Summer} can be cast to {asInteger}");
+
+Season asSeason = (Season)3;
+Console.WriteLine($"{3} can be cast to {asSeason}.");
+
+#!markdown
+
+However, you must be careful when performing casts. For example:
+
+#!csharp
+
+Season oops = (Season)42;
+Console.WriteLine(oops);
+DisplaySeasonInfo(oops);
+
+#!markdown
+
+The above example both compiles and runs without any errors.
+
+#!markdown
+
+## Practice
+
+#!markdown
+
+### Practice: Month as an Enumerated Type
+
+Define an enumerated type `Month` that has 12 options (one for each month in the year).
+
+#!csharp
+
+// Write your code here
+
+#!markdown
+
+### Practice: GetSeason
+
+Write a method `Season GetSeason(Month month)` which given a month returns the season that Month is in. 
+
+You may use the following definition:
+
+* `Winter` includes `December`, `January`, and `February`
+* `Spring` includes `March`, `April`, and `May`
+* `Summer` includes `June`, `July`, and `August`
+* `Fall` includes `September`, `October`, `November`
+
+#!csharp
+
+// Write your code here
+
+#!markdown
+
+### Practice: Months Remaining
+
+Write a method `int MonthsRemainingInYear(Month month)` which given a `Month` returns the number of remaining months in the year. For example:
+
+`MonthsRemaining(Month.December)` would return 1 and `MonthsRemaining(Month.January)` would return 12.
+
+**Bonus**: A clever solution can be written without writing any if statements
+
+#!csharp
+
+// Write your code here
+
+#!markdown
+
+## Gritty Details / Features
+
+Everything beyond this point falls into the category of a gritty detail that,
+for the majority of people, will never be used. However, if you're thirsty
+to know more, feel free to read on!
+
+#!markdown
+
+### Changing Enums Cast Value
+
+#!markdown
+
+It is also possible to change the underlying value representing each enum:
+
+#!csharp
+
+public enum Season
+{
+    Winter = 1,
+    Spring = 2,
+    Summer = 4,
+    Fall = 8
+}
+
+int asInteger = (int)Season.Summer;
+Console.WriteLine($"{Season.Summer} can be cast to {asInteger}");
+
+Season asSeason = (Season)8;
+Console.WriteLine($"{8} can be cast to {asSeason}.");
+
+#!markdown
+
+**Note**: You typically will not need to assign custom values. However, one
+strong use case is to use it in tandem with the Flags attribute. We won't cover
+that in this lesson as it is an advanced topic. If you'd like to read more about
+it, the Microsoft documentation is a good place to start:
+https://learn.microsoft.com/en-us/dotnet/api/system.flagsattribute
+
+#!markdown
+
+## Changing Enum Types
+
+Lastly, it is possible to change the underlying type of an enum to any
+**integral** type by specifying it in the declaration. For example: 
+
+#!csharp
+
+public enum Season : byte
+{
+    Winter,
+    Spring,
+    Summer,
+    Fall
+}
+
+#!markdown
+
+The above example will enforce that the `Season` type is represented as a `byte` rather than an `int`.
+
+In general, you should not do this. However, there are rare circumstances where memory constraints come into play. In these cases, it may be useful to specify the underlying type.

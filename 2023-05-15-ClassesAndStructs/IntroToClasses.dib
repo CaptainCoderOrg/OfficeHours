@@ -1,0 +1,338 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"languageName":"csharp","name":"csharp"}]}}
+
+#!markdown
+
+# Introduction to Classes in C#
+
+In this lesson, you will explore how to define and use custom data types in C#
+using **class** definitions.
+
+#!markdown
+
+## What is a Class
+
+As a developer, one of your primary goals should be to manage the complexity of
+the programs you write for both maintainability and reusability. When using an
+Object Oriented Programming language, such as C#, one way this is accomplished
+is by defining data object classifications typically abbreviated as just
+**class**.
+
+It can be helpful to imagine a class as a template for creating objects, like a
+blueprint for building a house. It defines what properties the object will have
+(like color, size, or name) and what actions it can perform (like walking or
+making sounds).
+
+#!markdown
+
+### Example: A Player Class
+
+Imagine you are creating a game that tracks information about two player's
+playing a game. In this game, each player has a name, score, and number of
+coins. To track this information, you might write the following program:
+
+#!csharp
+
+string name1 = "Bob";
+int score1 = 0;
+int coins1 = 10;
+
+string name2 = "Susan"; 
+int score2 = 0;
+int coins2 = 10;
+
+Console.WriteLine($"{name1} has {coins1} coins and a score of {score1}.");
+Console.WriteLine($"{name2} has {coins2} coins and a score of {score2}.");
+
+#!markdown
+
+Notice that the variables `name1`, `score1`, `coins1` represent data for one
+player and the variables `name2`, `score2`, and `coins2` represent data for the
+other player.
+
+When you see code like this, it is indicative that you have a data
+classification (**class**). In this case, you could write the following
+**class** definition to track each player's information:
+
+#!csharp
+
+public class Player
+{
+    public string Name = string.Empty; //  Specifies the default value of Name to be the empty string
+    public int Score = 0; // Specifies the default value of Score to be 0
+    public int Coins = 10; // Specifies the default value of Coins to be 0
+}
+
+#!markdown
+
+With the above definition, you can refactor the original program:
+
+#!csharp
+
+Player player1 = new Player();
+player1.Name = "Bob";
+
+Player player2 = new Player(); 
+player2.Name = "Susan";
+
+Console.WriteLine($"{player1.Name} has {player1.Coins} coins and a score of {player1.Score}.");
+Console.WriteLine($"{player2.Name} has {player2.Coins} coins and a score of {player2.Score}.");
+
+#!markdown
+
+Pause and think about the first line of the example above:
+
+```csharp
+Player player1 = new Player();
+```
+
+This line both declares and initializes a variable called `player1`. There are
+two important things to note here:
+
+1. The **type** of the `player1` variables is `Player`
+
+What are the implications of this?
+
+You have the ability to define our own data types! If this is your first time
+using classes, this should hopefully be an exciting realization. Previously, you
+were bound to using only the simple data types provided: `int`, `string`,
+`double`, `bool`, `etc`. You may not realize it just yet, BUT, this is a very
+powerful tool.
+
+2. The **value** of the `player1` variables is the result of evaluating `new Player()`
+
+What does it mean to evaluate `new Player()`. In C#, the `new` indicates that
+you would like to initialize an object. You will often hear this called
+"instantiation" as an instance of the **class** defintion. It is also often
+called "construction" as the object is being "constructed" (more on that later). 
+
+ In short, you can think of this as a way to initialize all of the member
+variables of the `Player` class.
+
+#!markdown
+
+Let's examine the next line:
+
+```csharp
+player1.Name = "Bob";
+```
+
+You have seen the assignment operator (`=`) which takes the value on the right
+an assigns it to the variable on the left. However, you may not have seen the
+`.` operator.
+
+This is often called the "dot" operator. But, what does it do?
+
+It's official name is the "member access" operator as it accesses a "member" of
+the object on the left side of the operator. In this case, it is accessing the
+**member  variable** called `Name` from the class definition. In this case, this
+line of code is assigning the value "Bob" to the **member variable** `Name`
+which is part of the object that the `player1` represents.
+
+**Note:** Member variables are often referred to as fields.
+
+#!markdown
+
+## Constructors
+
+In the previous example, you initialize the `Score` and `Coins` member variables
+to 0 and 10 respectively. However, the `Name` member variable is initialized to
+`string.Empty` and then later re-assigned once the user has specified the name
+to use.
+
+It is possible to write a custom constructor that will allow you to specify data
+that will be used during instantiation:
+
+#!csharp
+
+public class Player
+{
+    public string Name; // No longer specifies the initial value
+    public int Score = 0;
+    public int Coins = 10;
+
+    // Declares a constructor that has a single string parameter name
+    public Player(string name)
+    {
+        // Initializes the Name member variable
+        Name = name;
+    }
+}
+
+#!markdown
+
+With the revised class definition, you can once again refactor the previous example:
+
+#!csharp
+
+Player player1 = new Player("Bob");
+Player player2 = new Player("Susan"); 
+
+Console.WriteLine($"{player1.Name} has {player1.Coins} coins and a score of {player1.Score}.");
+Console.WriteLine($"{player2.Name} has {player2.Coins} coins and a score of {player2.Score}.");
+
+#!markdown
+
+If you would like to provide several ways to construct an object, you can provide multiple constructors:
+
+#!csharp
+
+public class Player
+{
+    public string Name; 
+    public int Score = 0;
+    public int Coins = 10;
+
+    public Player()
+    {
+        Name = "I was never given a name...";
+    }
+
+    
+    public Player(string name)
+    {
+        Name = name;
+    }
+
+    public Player(string name, int startingCoins)
+    {
+        Name = name;
+        Coins = startingCoins;
+    }
+}
+
+#!markdown
+
+With the above definition, it is now possible to construct a `Player` object 3 different ways:
+
+#!csharp
+
+Player bob = new Player("Bob");
+Player richie = new Player("Rich", 1_000_000);
+Player noName = new Player();
+
+Console.WriteLine($"{bob.Name} has {bob.Coins} coins and a score of {bob.Score}.");
+Console.WriteLine($"{richie.Name} has {richie.Coins} coins and a score of {richie.Score}.");
+Console.WriteLine($"{noName.Name} has {noName.Coins} coins and a score of {noName.Score}.");
+
+#!markdown
+
+## Class Methods
+
+A method in C# is a code block that contains a series of statements that are
+executed when the method is called. It is a way of breaking down a complex
+problem into smaller and simpler sub-problems. A method can also be used to
+reduce the amount of code that needs to be written, as it can be used to perform
+the same tasks repeatedly.
+
+For example, in the example above, we repeated lines 5, 6 and 7 to display the
+two player's information. We could instead, add a method `DisplayInfo` method to
+the `Player` class to reduce the complexity:
+
+#!csharp
+
+public class Player
+{
+    public string Name;
+    public int Score = 0;
+    public int Coins = 10;
+    public Player(){Name = "I was never given a name...";}
+    public Player(string name){Name = name;}
+    public Player(string name, int startingCoins){Name = name; Coins = startingCoins; }
+
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"{Name} has {Coins} and a score of {Score}.");
+    }
+}
+
+#!markdown
+
+With this new version, you can refactor the example one more time:
+
+#!csharp
+
+Player bob = new Player("Bob");
+Player richie = new Player("Rich", 1_000_000);
+Player noName = new Player();
+bob.DisplayInfo();
+richie.DisplayInfo();
+noName.DisplayInfo();
+
+#!markdown
+
+Methods often operate on the fields of an object. Let's add a method that
+increases the player's coins by a specified amount:
+
+#!csharp
+
+public class Player
+{
+    public string Name;
+    public int Score = 0;
+    public int Coins = 10;
+    public Player(){Name = "I was never given a name...";}
+    public Player(string name){Name = name;}
+    public Player(string name, int startingCoins){Name = name; Coins = startingCoins; }
+    public void DisplayInfo(){Console.WriteLine($"{Name} has {Coins} and a score of {Score}.");}
+
+    public void CollectCoins(int coinsCollected)
+    {
+        Coins += coinsCollected;
+        Console.WriteLine($"{Name} collects {coinsCollected}!");
+    }
+}
+
+#!markdown
+
+Next, let's call the method for each of the player's to see the result:
+
+#!csharp
+
+Player bob = new Player("Bob");
+Player richie = new Player("Rich", 1_000_000);
+Player noName = new Player();
+bob.DisplayInfo();
+richie.DisplayInfo();
+noName.DisplayInfo();
+
+bob.CollectCoins(6);
+richie.CollectCoins(1);
+noName.CollectCoins(3);
+
+bob.DisplayInfo();
+richie.DisplayInfo();
+noName.DisplayInfo();
+
+#!markdown
+
+## Practice
+
+### Design a Location Class
+
+Design a **class** to represent a location. It should include at least 3
+**member variables** and a **constructor** that intializes all three variables.
+
+#!csharp
+
+// Write your code here
+
+#!markdown
+
+### Design a Rectangle Class
+
+Design a **class** to represent a rectangle.
+
+* What member variables should it contain?
+
+* Write at least two constructors: One with no parameters (default constructor)
+and one that initializes the member variables.
+
+* Write a Perimeter method which returns the perimeter of the rectangle.
+
+* Write an Area method which returns the area of the rectangle.
+
+#!csharp
+
+// Write your code here

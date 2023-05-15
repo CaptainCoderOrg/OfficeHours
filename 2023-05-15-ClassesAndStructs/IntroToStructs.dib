@@ -1,0 +1,199 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"languageName":"csharp","name":"csharp"}]}}
+
+#!markdown
+
+# Introduction to Structs in C#
+
+In this lesson, you will explore the differences between **structs** and
+**classes** in C# as well as when to consider using a **struct** over a
+**class**.
+
+Before starting this lesson, you should understand the basics of **classes** in
+C#.
+
+#!markdown
+
+## What is a struct?
+
+In C#, a **struct** is very similar to a **class** as it allows you to define a template for creating data objects. For example:
+
+#!csharp
+
+public struct Position
+{
+    public int Row;
+    public int Col;
+
+    public Position(int row, int col)
+    {
+        Row = row;
+        Col = col;
+    }
+
+    public void PrintInfo()
+    {
+        Console.WriteLine($"Position at ({Row}, {Col})");
+    }
+
+}
+
+#!markdown
+
+If you're familiar with **classes** you'll notice that that anatomy of a **struct** is nearly identical (with the exception of the work **struct**). Constructing and using the `Position` class is demonstrated below:
+
+#!csharp
+
+Position topLeft = new Position(0, 0);
+Position anotherPosition = new Position(5, 5);
+anotherPosition.Row = 3;
+topLeft.PrintInfo();
+anotherPosition.PrintInfo();
+
+#!markdown
+
+## Value and Reference Types
+
+The biggest difference between a **class** and a **struct** is that a **struct**
+is a **value** type and a **class** is a **reference** type. 
+
+Value types in C# directly store the actual value and are copied when assigned
+or passed into a method. Reference types store a reference to the data and
+multiple variables can point to the same data. Additionally, Value types are
+allocated on the stack, while reference types are allocated on the heap and
+managed by the garbage collector.
+
+To understand this better, let's look at an example of the `Position` type first
+declared as a **class** and then declared as a **struct**:
+
+#!csharp
+
+public class Position
+{
+    public int Row;
+    public int Col;
+
+    public Position(int row, int col)
+    {
+        Row = row;
+        Col = col;
+    }
+
+    public void PrintInfo()
+    {
+        Console.WriteLine($"Position at ({Row}, {Col})");
+    }
+
+}
+
+Position firstPosition = new Position(0, 0);
+Position secondPosition = firstPosition;
+secondPosition.Col = 3;
+firstPosition.Row = 5;
+firstPosition.PrintInfo();
+secondPosition.PrintInfo();
+
+#!markdown
+
+In the above example, `Position` is a **class** which is a **reference type**. 
+
+Let's look at the first two lines of executed code:
+
+```csharp
+Position firstPosition = new Position(0, 0);
+Position secondPosition = firstPosition;
+```
+
+First we construct a `new Position(0, 0)`, because it is a **reference type**
+it is allocated on the heap. Next we assign a reference to it to the variable
+`firstPosition` which resides on the stack. 
+
+Next, we assign `secondPosition = firstPosition` which adds a reference to the
+stack which points to the same data in the heap.
+
+The following image shows the resulting memory model after these two lines of code are executed.
+
+![Classes](ClassesPt1.png)
+
+#!markdown
+
+Notice that both `firstPosition` and `secondPosition` point to the same object
+on the heap.
+
+When the following lines are executed:
+
+```csharp
+secondPosition.Col = 3;
+firstPosition.Row = 5;
+```
+
+This means to update the data on the heap that the variables `secondPosition`
+and `firstPosition` reference (the same object). Below shows the resulting memory model:
+
+![Classes](ClassesPt2.png)
+
+#!csharp
+
+public struct Position
+{
+    public int Row;
+    public int Col;
+
+    public Position(int row, int col)
+    {
+        Row = row;
+        Col = col;
+    }
+
+    public void PrintInfo()
+    {
+        Console.WriteLine($"Position at ({Row}, {Col})");
+    }
+
+}
+
+Position firstPosition = new Position(0, 0);
+Position secondPosition = firstPosition;
+secondPosition.Col = 3;
+firstPosition.Row = 5;
+firstPosition.PrintInfo();
+secondPosition.PrintInfo();
+
+#!markdown
+
+In the above example, `Position` is a **struct** which is a **value type**. 
+
+Let's look at the first two lines of executed code:
+
+```csharp
+Position firstPosition = new Position(0, 0);
+Position secondPosition = firstPosition;
+```
+
+First we construct a `new Position(0, 0)`, because it is a **value type** it is
+allocated directly on the heap. When we assign it to the `firstPosition` that
+becomes a label that refers to a contiguous chunk of memory directly on the
+stack.
+
+Next, we assign `secondPosition = firstPosition` which creates a second contiguous
+chunk of memory and copies the values onto the stack.
+
+The following image shows the resulting memory model after these two lines of code are executed.
+
+![StackPt1](StackPt1.png)
+
+#!markdown
+
+Notice that both `firstPosition` and `secondPosition` have their own values.
+
+When the following lines are executed:
+
+```csharp
+secondPosition.Col = 3;
+firstPosition.Row = 5;
+```
+
+This updates the data directly on the stack associated with the labels. Below shows the resulting memory model:
+
+![Structs](StackPt2.png)
